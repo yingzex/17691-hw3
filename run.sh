@@ -6,8 +6,9 @@ dvc stage add --force -n prepare \
 dvc stage add --force -n featurize \
     -d featurize.py \
     -d data/prepared.csv \
-    -o data/features.csv \
+    -o data/train_data.csv,data/test_data.csv \
     python featurize.py
 
 
-dvc stage add --force -n train -d train.py -d data/features.csv -o model/model.pkl python train.py
+
+dvc stage add --force -n train -d train.py -d data/train_data.csv -o model/model.pkl python train.py

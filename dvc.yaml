@@ -12,11 +12,11 @@ stages:
     - data/prepared.csv
     - featurize.py
     outs:
-    - data/features.csv
+    - data/train_data.csv,data/test_data.csv
   train:
     cmd: python train.py
     deps:
-    - data/features.csv
+    - data/train_data.csv
     - train.py
     outs:
     - model/model.pkl

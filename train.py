@@ -33,4 +33,4 @@ def train_model(input_path, model_output_path):
         pickle.dump(model, file)
 
 if __name__ == "__main__":
-    train_model("data/features.csv", "model/model.pkl")
+    train_model("data/train_data.csv", "model/model.pkl")
