@@ -1,0 +1,27 @@
+stages:
+  prepare:
+    cmd: python prepare.py
+    deps:
+    - data/vineyard_weather_1948-2017.csv
+    - prepare.py
+    outs:
+    - data/prepared.csv
+  featurize:
+    cmd: python featurize.py
+    deps:
+    - data/prepared.csv
+    - featurize.py
+    outs:
+    - data/features.csv
+  train:
+    cmd: python train.py
+    deps:
+    - data/features.csv
+    - train.py
+    outs:
+    - model/model.pkl
+metrics:
+- dvclive/metrics.json
+plots:
+- dvclive/plots/metrics:
+    x: step

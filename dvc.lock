@@ -1,0 +1,50 @@
+schema: '2.0'
+stages:
+  prepare:
+    cmd: python prepare.py
+    deps:
+    - path: data/vineyard_weather_1948-2017.csv
+      hash: md5
+      md5: 4643e0e7904f57673657baf7d68683ac
+      size: 761976
+    - path: prepare.py
+      hash: md5
+      md5: 7d8f35f6a84815bce0e225c159916001
+      size: 374
+    outs:
+    - path: data/prepared.csv
+      hash: md5
+      md5: b4be4fa36938d5022884a31f3cea18a4
+      size: 79344
+  featurize:
+    cmd: python featurize.py
+    deps:
+    - path: data/prepared.csv
+      hash: md5
+      md5: b4be4fa36938d5022884a31f3cea18a4
+      size: 79344
+    - path: featurize.py
+      hash: md5
+      md5: 87f0356c65823e49d8da7e3410ba1656
+      size: 437
+    outs:
+    - path: data/features.csv
+      hash: md5
+      md5: 4b668c02cecd06d99b02107016618289
+      size: 137998
+  train:
+    cmd: python train.py
+    deps:
+    - path: data/features.csv
+      hash: md5
+      md5: 4b668c02cecd06d99b02107016618289
+      size: 137998
+    - path: train.py
+      hash: md5
+      md5: 8fedb5b12f5135a13486ef230ccdc968
+      size: 1517
+    outs:
+    - path: model/model.pkl
+      hash: md5
+      md5: bccf41a52b63ed3d1d7f2569509d8e6d
+      size: 770
