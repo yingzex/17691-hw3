@@ -7,12 +7,21 @@ from dvclive import Live
 import pickle
 import os
 
+import yaml
+import sys
+
+def load_params(params_path):
+    with open(params_path, 'r') as file:
+        return yaml.safe_load(file)
+
+
 def train_model(input_path, model_output_path):
     df = pd.read_csv(input_path)
     X = df[['PRCP', 'TMAX', 'TMIN', 'PRCP_lag1', 'TMAX_lag1', 'TMIN_lag1', 'RAIN_lag1']]
     y = df['RAIN'].astype(int)
     tscv = TimeSeriesSplit(n_splits=5)
-    model = LogisticRegression()
+    params = load_params('params.yaml')
+    model = LogisticRegression(C=params['model']['C'], solver=params['model']['solver'])
     
     with Live() as live:
         for train_index, test_index in tscv.split(X):

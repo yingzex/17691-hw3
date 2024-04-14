@@ -28,7 +28,6 @@ def evaluate_model(model_path, test_data_path, output_path):
     # Generate a classification report
     report = classification_report(y_test, y_pred)
 
-    # Optionally, save the report to a file
     with open(output_path, 'w') as output_file:
         output_file.write(f"Accuracy: {accuracy}\n")
         output_file.write(f"Precision: {precision}\n")
