@@ -1,0 +1,35 @@
+name: DVC CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+    - name: Install Dependencies
+      run: |
+        pip install -r requirements.txt
+    - name: Install DVC
+      run: pip install dvc
+    - name: Fetch Data
+      run: dvc pull
+    - name: Reproduce DVC Pipeline
+      run: dvc repro
+    - name: Push Changes
+      run: |
+        dvc push
+        git config --global user.email "15109268895x@gmail.com"
+        git config --global user.name "yingzex"
+        git commit -am "Reproducibility check"
+        git push
