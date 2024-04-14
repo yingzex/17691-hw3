@@ -1,0 +1,6 @@
+outs:
+- md5: 4643e0e7904f57673657baf7d68683ac
+  size: 761976
+  isexec: true
+  hash: md5
+  path: vineyard_weather_1948-2017.csv
