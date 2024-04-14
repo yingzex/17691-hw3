@@ -9,3 +9,4 @@ def aggregate_data(file_path, output_path):
 
 if __name__ == "__main__":
     aggregate_data(sys.argv[1], sys.argv[2])
+
