@@ -12,7 +12,8 @@ stages:
     - data/prepared.csv
     - featurize.py
     outs:
-    - data/train_data.csv,data/test_data.csv
+    - data/train_data.csv
+    - data/test_data.csv
   train:
     cmd: python train.py
     deps:

@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-def create_features(input_path, output_path):
+def create_features(input_path):
     df = pd.read_csv(input_path)
     df['PRCP_lag1'] = df['PRCP'].shift(1)
     df['TMAX_lag1'] = df['TMAX'].shift(1)

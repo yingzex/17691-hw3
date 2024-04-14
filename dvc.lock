@@ -25,26 +25,30 @@ stages:
       size: 79344
     - path: featurize.py
       hash: md5
-      md5: 87f0356c65823e49d8da7e3410ba1656
-      size: 437
+      md5: 9064d2e9be023a7ad0c991a8ef1e16bd
+      size: 592
     outs:
-    - path: data/features.csv
+    - path: data/test_data.csv
       hash: md5
-      md5: 4b668c02cecd06d99b02107016618289
-      size: 137998
+      md5: edac138386cacd01aa5a2dca22a83a0b
+      size: 27676
+    - path: data/train_data.csv
+      hash: md5
+      md5: d201f5236e1bbe2f38d437f45c675d8e
+      size: 110387
   train:
     cmd: python train.py
     deps:
-    - path: data/features.csv
+    - path: data/train_data.csv
       hash: md5
-      md5: 4b668c02cecd06d99b02107016618289
-      size: 137998
+      md5: d201f5236e1bbe2f38d437f45c675d8e
+      size: 110387
     - path: train.py
       hash: md5
-      md5: 8fedb5b12f5135a13486ef230ccdc968
-      size: 1517
+      md5: 88dd30e80d4ebe1cd7fbf4cf6497f0c8
+      size: 1519
     outs:
     - path: model/model.pkl
       hash: md5
-      md5: bccf41a52b63ed3d1d7f2569509d8e6d
+      md5: e63a5e8f3b8adfd92bc158cf89c076dd
       size: 770
