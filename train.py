@@ -1,4 +1,5 @@
 import pandas as pd
+from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
 from sklearn.model_selection import TimeSeriesSplit
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score, precision_score, recall_score
@@ -14,14 +15,30 @@ def load_params(params_path):
     with open(params_path, 'r') as file:
         return yaml.safe_load(file)
 
+def get_model(params_path):
+    params = load_params(params_path)
+    model_config = params['model']
+    model_type = model_config['type']
+    params = model_config['params']
+
+    if model_type == 'logistic_regression':
+        model = LogisticRegression(**params['logistic_regression'])
+    elif model_type == 'random_forest':
+        model = RandomForestClassifier(**params['random_forest'])
+    elif model_type == 'gradient_boosting':
+        model = GradientBoostingClassifier(**params['gradient_boosting'])
+    else:
+        raise ValueError("Unsupported model type")
+
+    return model
+
 
 def train_model(input_path, model_output_path):
     df = pd.read_csv(input_path)
     X = df[['PRCP', 'TMAX', 'TMIN', 'PRCP_lag1', 'TMAX_lag1', 'TMIN_lag1', 'RAIN_lag1']]
     y = df['RAIN'].astype(int)
     tscv = TimeSeriesSplit(n_splits=5)
-    params = load_params('params.yaml')
-    model = LogisticRegression(C=params['model']['C'], solver=params['model']['solver'])
+    model = get_model('params.yaml')
     
     with Live() as live:
         for train_index, test_index in tscv.split(X):
