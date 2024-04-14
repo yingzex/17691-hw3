@@ -21,6 +21,14 @@ stages:
     - train.py
     outs:
     - model/model.pkl
+  evaluate:
+    cmd: python evaluate.py
+    deps:
+    - data/test_data.csv
+    - evaluate.py
+    - model/model.pkl
+    outs:
+    - results/evaluation_report.txt
 metrics:
 - dvclive/metrics.json
 plots:
