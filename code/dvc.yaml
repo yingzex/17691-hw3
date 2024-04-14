@@ -1,0 +1,27 @@
+metrics:
+- dvclive/metrics.json
+plots:
+- dvclive/plots/metrics:
+    x: step
+stages:
+  prepare:
+    cmd: python src/prepare.py data/vineyard_weather_1948-2017.csv data/prepared.csv
+    deps:
+    - data/vineyard_weather_1948-2017.csv
+    - src/prepare.py
+    outs:
+    - data/prepared.csv
+  featurize:
+    cmd: python src/featurize.py data/prepared.csv data/features.csv
+    deps:
+    - data/prepared.csv
+    - src/featurize.py
+    outs:
+    - data/features.csv
+  train:
+    cmd: python src/train.py data/features.csv
+    deps:
+    - data/features.csv
+    - src/train.py
+    outs:
+    - data/predict.dat
