@@ -1,5 +1,5 @@
 model:
-  type: 'logistic_regression'  # Can be 'logistic_regression', 'random_forest', 'gradient_boosting'
+  type: 'gradient_boosting'  # Can be 'logistic_regression', 'random_forest', 'gradient_boosting'
   params:
     logistic_regression:
       C: 1.0
