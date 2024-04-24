@@ -16,6 +16,8 @@ no_storm_no_sugar_revenue = 80000
 no_storm_typical_sugar_revenue = 117500
 no_storm_high_sugar_revenue = 125000
 
+prediction_result = 'No'
+
 # Streamlit page configuration
 st.title('Winery Decision Model')
 
@@ -32,14 +34,6 @@ botrytis_chance = st.sidebar.slider('Chance of Botrytis (%)', 0, 100, int(defaul
 no_sugar_chance = st.sidebar.slider('Chance of No Sugar Increase (%)', 0, 100, int(default_probs['no_sugar'] * 100)) / 100
 typical_sugar_chance = st.sidebar.slider('Chance of Typical Sugar Increase (%)', 0, 100, int(default_probs['typical_sugar'] * 100)) / 100
 high_sugar_chance = st.sidebar.slider('Chance of High Sugar Increase (%)', 0, 100, int(default_probs['high_sugar'] * 100)) / 100
-
-# # Convert percentages to probabilities
-# probabilities = {
-#     'botrytis': botrytis_chance / 100,
-#     'no_sugar': no_sugar_chance / 100,
-#     'typical_sugar': typical_sugar_chance / 100,
-#     'high_sugar': high_sugar_chance / 100
-# }
 
 st.write('Please enter the weather data to predict rain.')
 
@@ -72,25 +66,39 @@ def calculate_expected_value():
     no_harvest_on_no_storm_e_value = no_storm_no_sugar_revenue * no_sugar_chance + no_storm_typical_sugar_revenue * typical_sugar_chance + no_storm_high_sugar_revenue * high_sugar_chance
     no_harvest_on_storm_e_value = storm_no_mold_revenue * (1 - botrytis_chance) + storm_mold_revenue * botrytis_chance
     harvest_e_value = harvest_now_revenue
-    e_value_without_predictor = harvest_e_value
+    # e_value_without_predictor = harvest_e_value
 
     no_harvest_on_prediction_no_storm_e_value = no_storm_chance_on_predictoin_no_storm * no_harvest_on_no_storm_e_value + storm_chance_on_prediction_no_storm * no_harvest_on_storm_e_value
     no_harvest_on_prediction_storm_e_value = storm_chance_on_prediction_storm * no_harvest_on_storm_e_value + no_storm_chance_on_prediction_storm * no_harvest_on_no_storm_e_value
 
-    prediction_storm_e_value = max(harvest_e_value, no_harvest_on_prediction_storm_e_value)
-    prediction_no_storm_e_value = max(harvest_e_value, no_harvest_on_prediction_no_storm_e_value)
+    # prediction_storm_e_value = max(harvest_e_value, no_harvest_on_prediction_storm_e_value)
+    # prediction_no_storm_e_value = max(harvest_e_value, no_harvest_on_prediction_no_storm_e_value)
 
-    prediction_storm_chance = 0.5 * (sensitivity+1-specificity)
-    prediction_no_storm_chance = 0.5 * (specificity+1-sensitivity)
+    # prediction_storm_chance = 0.5 * (sensitivity+1-specificity)
+    # prediction_no_storm_chance = 0.5 * (specificity+1-sensitivity)
 
-    e_value_with_predictor = prediction_storm_chance * prediction_storm_e_value + prediction_no_storm_chance * prediction_no_storm_e_value
+    # e_value_with_predictor = prediction_storm_chance * prediction_storm_e_value + prediction_no_storm_chance * prediction_no_storm_e_value
 
-    predictor_value = e_value_with_predictor - e_value_without_predictor
-    return predictor_value, np.random.rand(), "Harvest Now"  # Dummy return
+    # predictor_value = e_value_with_predictor - e_value_without_predictor
 
-# Calculate e-value and recommended decision
-predictor_value, e_value, recommendation = calculate_expected_value()
-
+    e_value = None
+    action = "Undecided"
+    if prediction_result == "Yes":
+        if (harvest_e_value > no_harvest_on_prediction_storm_e_value):
+            e_value = harvest_e_value
+            action = "Harvest now"
+        else:
+            e_value = no_harvest_on_prediction_storm_e_value
+            action = "Wait to harvest"
+    else:
+        if (harvest_e_value > no_harvest_on_prediction_no_storm_e_value):
+            e_value = harvest_e_value
+            action = "Harvest now"
+        else:
+            e_value = no_harvest_on_prediction_storm_e_value
+            action = "Wait to harvest"
+        
+    return e_value, action
 
 # Button to make prediction
 if st.button('Predict'):
@@ -103,11 +111,17 @@ if st.button('Predict'):
 
     # Make prediction
     prediction = model.predict(input_scaled)
-    result = 'Yes' if prediction[0] == 1 else 'No'
+    prediction_result = 'Yes' if prediction[0] == 1 else 'No'
     
     # Display the prediction
-    st.write(f'Prediction: Will it rain tomorrow? {result}')
+    st.write(f'Prediction: Will it rain tomorrow? {prediction_result}')
 
-# Display results
-st.write(f"Expected value of the decision: ${predictor_value:,.2f}")
-st.write(f"Recommended alternative: {recommendation}")
+
+    # Calculate e-value and recommended decision
+    e_value, action = calculate_expected_value()
+
+    # Display results
+    st.write(f"Expected value of the decision: ${e_value:,.2f}")
+    st.write(f"Recommended alternative: {action}")
+
+
