@@ -36,9 +36,18 @@ def get_model(params_path):
 def train_model(input_path, model_output_path):
     df = pd.read_csv(input_path)
     X = df[['PRCP', 'TMAX', 'TMIN', 'PRCP_lag1', 'TMAX_lag1', 'TMIN_lag1', 'RAIN_lag1']]
+
+    sampled_data = X.sample(5)
+    # Print the sampled data
+    print(sampled_data)
+    
     y = df['RAIN'].astype(int)
     tscv = TimeSeriesSplit(n_splits=5)
     model = get_model('params.yaml')
+
+    sampled_data = y.sample(5)
+    # Print the sampled data
+    print(sampled_data)
     
     with Live() as live:
         for train_index, test_index in tscv.split(X):
